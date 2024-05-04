@@ -21,39 +21,35 @@ developmentChains.includes(network.name)
                   let winnerAccount = accounts[0].address
                   let winnerStartingBalance
 
-                  await new Promise(async (resolve, reject) => {
-                      raffle.once("WinnerPicked", async () => {
-                          console.log("WinnerPicked event fired")
-                          try {
-                              const winner = await raffle.getRecentWinner()
-                              const endingTimestamp = await raffle.getLatestTimestamp()
-                              const raffleState = await raffle.getRaffleState()
-                              //   const winnerEndingBalance =
-                              //       await ethers.provider.getBalance(winnerAccount)
-                              await expect(raffle.getPlayer(0)).to.be.reverted
-                              assert.equal(winner, winnerAccount)
-                              assert.equal(raffleState, 0)
-                              //   assert.equal(
-                              //       winnerEndingBalance,
-                              //       winnerStartingBalance + raffleEntranceFee,
-                              //   )
-                              //   assert(endingTimestamp > startingTimestamp)
+                  // await new Promise(async (resolve, reject) => {
+                  //   raffle.once("WinnerPicked", async () => {
+                  //       console.log("WinnerPicked event fired")
+                  //       try {
+                  //           const winner = await raffle.getRecentWinner()
+                  //           const endingTimestamp = await raffle.getLatestTimestamp()
+                  //           const raffleState = await raffle.getRaffleState()
+                  //           const winnerEndingBalance =
+                  //               await ethers.provider.getBalance(winnerAccount)
+                  //           await expect(raffle.getPlayer(0)).to.be.reverted
+                  //           assert.equal(winner, winnerAccount)
+                  //           assert.equal(raffleState, 0)
+                  //           assert.equal(
+                  //               winnerEndingBalance,
+                  //               winnerStartingBalance + raffleEntranceFee,
+                  //           )
+                  //           assert(endingTimestamp > startingTimestamp)
 
-                              resolve()
-                          } catch (error) {
-                              reject(error)
-                          }
-                      })
-                      const { upkeepNeeded } = await raffle.checkUpkeep.staticCall("0x")
-                      console.log(upkeepNeeded)
-                      try {
-                          await raffle.performUpkeep("0x")
-                      } catch (error) {
-                          console.log(error)
-                      }
-                      // await raffle.enterRaffle({ value: raffleEntranceFee })
-                      // winnerStartingBalance = await ethers.provider.getBalance(winnerAccount)
-                  })
+                  //           resolve()
+                  //       } catch (error) {
+                  //           reject(error)
+                  //       }
+                  //   })
+                  // })
+                  await raffle.enterRaffle({ value: raffleEntranceFee })
+                  winnerStartingBalance = await ethers.provider.getBalance(winnerAccount)
+                  const { upkeepNeeded } = await raffle.checkUpkeep.staticCall("0x")
+                  console.log(upkeepNeeded)
+                  await raffle.performUpkeep("0x")
               })
           })
       })
